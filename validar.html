@@ -42,9 +42,7 @@
             margin-left: -15px; 
             padding: 45px 30px 25px 38px; 
             margin-bottom: -10px; 
-            
             font-size: 15px; 
-            
             color: #333;
             box-sizing: border-box;
             text-align: left;
@@ -67,7 +65,7 @@
         }
 
         #datosContenedor .card:nth-child(2) .card-header {
-            padding-top: 6px; 
+            padding-top: 10px; 
             padding-bottom: 25px; 
         }
 
@@ -101,13 +99,11 @@
             padding: 0px 12px 45px 28px; 
         }
         
+        /* Regresamos el data-row a la normalidad para no afectar a la CURP ni otros campos */
         .data-row {
             display: flex;
             width: 100%;
             padding: 2.5px 0; 
-            /* --- AJUSTE: Alineación vertical inferior para las filas --- */
-            align-items: flex-end; 
-            /* ----------------------------------------------------------- */
         }
         .data-label {
             font-weight: 400; 
@@ -213,7 +209,6 @@
                 if (idCampo === 'correoElectronico') {
                     valor = valor.toLowerCase();
                 } else if (idCampo === 'curp' && valor.length >= 18) {
-                    // Divide la CURP: 16 caracteres, salto de línea, y el resto (2 caracteres)
                     valor = valor.substring(0, 16).toUpperCase() + '\n' + valor.substring(16).toUpperCase();
                 } else {
                     valor = valor.toUpperCase();
@@ -221,6 +216,13 @@
                 
                 const divRow = document.createElement('div');
                 divRow.className = 'data-row';
+                
+                // --- AJUSTE: Aplicamos la alineación hacia abajo ÚNICAMENTE a estos 3 campos ---
+                if (['fechaInicioOperaciones', 'situacionContribuyente', 'fechaUltimoCambio'].includes(idCampo)) {
+                    divRow.style.alignItems = 'flex-end';
+                }
+                // ---------------------------------------------------------------------------------
+
                 const divLabel = document.createElement('div');
                 divLabel.className = 'data-label';
                 divLabel.textContent = nombresCampos[idCampo];

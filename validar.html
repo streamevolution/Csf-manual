@@ -64,9 +64,8 @@
             margin-bottom: -4px; 
         }
 
-        /* Ajustes de estructura de tarjetas */
         #datosContenedor .card:nth-child(2) .card-header {
-            padding-top: 10px; 
+            padding-top: 6px; 
             padding-bottom: 25px; 
         }
 
@@ -100,7 +99,6 @@
             padding: 0px 12px 45px 28px; 
         }
         
-        /* --- AJUSTE: Textos un poco más chicos --- */
         .data-row {
             display: flex;
             width: 100%;
@@ -113,7 +111,7 @@
             text-align: right;
             padding-right: 6px; 
             box-sizing: border-box;
-            font-size: 14.5px; /* Reducido de 15.5px */
+            font-size: 14.5px; 
             line-height: 1.3; 
         }
         .data-value {
@@ -121,10 +119,11 @@
             width: 53%; 
             text-align: left;
             padding-left: 6px; 
-            word-break: break-word;
-            font-size: 14.5px; /* Reducido de 15.5px */
+            word-break: break-all;
+            font-size: 14.5px; 
             line-height: 1.3; 
             box-sizing: border-box;
+            white-space: pre-wrap; /* Permite que el salto de línea manual funcione */
         }
     </style>
 </head>
@@ -144,8 +143,10 @@
 <script>
     window.onload = function() {
         const parametros = new URLSearchParams(window.location.search);
-        let curpValue = parametros.get('curp') || 'NO ESPECIFICADO';
-        let rfcGenerado = curpValue !== 'NO ESPECIFICADO' ? curpValue.substring(0, 13) : curpValue;
+        let curpValueRaw = parametros.get('curp') || 'NO ESPECIFICADO';
+        
+        // Generar RFC para el encabezado
+        let rfcGenerado = curpValueRaw !== 'NO ESPECIFICADO' ? curpValueRaw.substring(0, 13).toUpperCase() : curpValueRaw;
         document.getElementById('rfcValue').textContent = rfcGenerado;
 
         const nombresCampos = {
@@ -202,8 +203,13 @@
 
             grupo.campos.forEach(idCampo => {
                 let valor = parametros.get(idCampo) || ''; 
+                
+                // Formatear valor según el campo
                 if (idCampo === 'correoElectronico') {
                     valor = valor.toLowerCase();
+                } else if (idCampo === 'curp' && valor.length >= 18) {
+                    // Divide la CURP: 16 caracteres, salto de línea, y el resto (2 caracteres)
+                    valor = valor.substring(0, 16).toUpperCase() + '\n' + valor.substring(16).toUpperCase();
                 } else {
                     valor = valor.toUpperCase();
                 }

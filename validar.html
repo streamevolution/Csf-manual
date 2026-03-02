@@ -7,113 +7,195 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f7f6;
-            padding: 20px;
+            background-color: #F0ECE6; /* Color exacto solicitado */
+            margin: 0;
+            padding: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+        }
+        .logo-container {
+            width: 100%;
+            text-align: center;
+            margin-top: 0;
+            padding-top: 0; 
+            margin-bottom: 20px;
+        }
+        .logo-container img {
+            max-width: 300px;
+            height: auto;
         }
         .container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             width: 100%;
             max-width: 600px;
+            padding: 0 15px;
+            box-sizing: border-box; 
         }
-        h2 {
-            text-align: center;
-            color: #2c3e50;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
+        
+        /* Estilos del rectángulo del RFC */
+        .rfc-rectangle {
+            background-color: #F6F3EE;
+            border: 1px solid #d2c3a5;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-size: 16px;
+            color: #333;
         }
+
+        /* Estilos de las tarjetas (Cards) */
+        .card {
+            background-color: #F4F0EA;
+            border: 1px solid #d2c3a5;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .card-header {
+            /* Degradado café/dorado de la imagen */
+            background: linear-gradient(to bottom, #d2bba0, #ba9c76);
+            padding: 10px 15px;
+            color: #4a3c31;
+            font-size: 15px;
+            font-weight: normal;
+            border-bottom: 1px solid #ba9c76;
+        }
+        .card-body {
+            padding: 15px 10px;
+        }
+        
+        /* Estilos de las filas de datos */
         .data-row {
             display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
+            justify-content: flex-start;
+            padding: 5px 0;
         }
         .data-label {
-            font-weight: bold;
-            color: #555;
+            font-weight: normal;
+            color: #333;
             width: 45%;
+            text-align: right;
+            padding-right: 15px;
+            box-sizing: border-box;
+            font-size: 14px;
         }
         .data-value {
-            color: #222;
+            color: #444;
             width: 55%;
-            text-align: right;
+            text-align: left;
             word-break: break-word;
-        }
-        .success-banner {
-            background-color: #d4edda;
-            color: #155724;
-            padding: 15px;
-            border-radius: 5px;
-            text-align: center;
-            margin-bottom: 20px;
-            font-weight: bold;
+            text-transform: uppercase; /* Para que todo el texto aparezca en mayúsculas como en la imagen */
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
 
+<div class="logo-container">
+    <img src="https://i.postimg.cc/PJt6GWyR/HACIENDA-SAT.jpg" alt="Logo Hacienda SAT">
+</div>
+
 <div class="container">
-    <div class="success-banner">
-        ✅ Datos validados correctamente
+    
+    <div class="rfc-rectangle">
+        El RFC: <span id="rfcValue"></span>, tiene asociada la siguiente información.
     </div>
-    <h2>Información del Contribuyente</h2>
     
     <div id="datosContenedor">
         </div>
+
 </div>
 
 <script>
-    // Función para obtener los parámetros de la URL
     window.onload = function() {
         const parametros = new URLSearchParams(window.location.search);
-        const contenedor = document.getElementById('datosContenedor');
+        
+        // Extraemos la CURP para simular el RFC en el texto superior (primeros 13 caracteres)
+        let curpValue = parametros.get('curp') || 'NO ESPECIFICADO';
+        let rfcGenerado = curpValue !== 'NO ESPECIFICADO' ? curpValue.substring(0, 13) : curpValue;
+        document.getElementById('rfcValue').textContent = rfcGenerado;
 
-        // Lista de los campos que queremos mostrar (deben coincidir con los del generador)
-        const campos = [
-            { id: 'curp', label: 'CURP' },
-            { id: 'nombre', label: 'Nombre' },
-            { id: 'apellidoPaterno', label: 'Apellido Paterno' },
-            { id: 'apellidoMaterno', label: 'Apellido Materno' },
-            { id: 'fechaNacimiento', label: 'Fecha de Nacimiento' },
-            { id: 'fechaInicioOperaciones', label: 'Inicio de Operaciones' },
-            { id: 'situacionContribuyente', label: 'Situación del Contribuyente' },
-            { id: 'fechaUltimoCambio', label: 'Último Cambio de Situación' },
-            { id: 'entidadFederativa', label: 'Entidad Federativa' },
-            { id: 'municipioDelegacion', label: 'Municipio / Delegación' },
-            { id: 'colonia', label: 'Colonia' },
-            { id: 'tipoVialidad', label: 'Tipo de Vialidad' },
-            { id: 'nombreVialidad', label: 'Nombre de Vialidad' },
-            { id: 'numeroExterior', label: 'Número Exterior' },
-            { id: 'cp', label: 'C.P.' },
-            { id: 'correoElectronico', label: 'Correo Electrónico' },
-            { id: 'al', label: 'AL' },
-            { id: 'regimen', label: 'Régimen' },
-            { id: 'fechaAlta', label: 'Fecha de Alta' }
+        // Definimos los nombres a mostrar para cada ID
+        const nombresCampos = {
+            curp: 'CURP:',
+            nombre: 'Nombre:',
+            apellidoPaterno: 'Apellido Paterno:',
+            apellidoMaterno: 'Apellido Materno:',
+            fechaNacimiento: 'Fecha Nacimiento:',
+            fechaInicioOperaciones: 'Fecha de Inicio de operaciones:',
+            situacionContribuyente: 'Situación del contribuyente:',
+            fechaUltimoCambio: 'Fecha del último cambio de situación:',
+            entidadFederativa: 'Entidad Federativa:',
+            municipioDelegacion: 'Municipio o delegación:',
+            colonia: 'Colonia:',
+            tipoVialidad: 'Tipo de vialidad:',
+            nombreVialidad: 'Nombre de la vialidad:',
+            numeroExterior: 'Número exterior:',
+            cp: 'CP:',
+            correoElectronico: 'Correo electrónico:',
+            al: 'AL:',
+            regimen: 'Régimen:',
+            fechaAlta: 'Fecha de Alta:'
+        };
+
+        // Estructuramos en los 3 grupos que aparecen en tus imágenes
+        const grupos = [
+            {
+                titulo: 'Datos de Identificación',
+                campos: ['curp', 'nombre', 'apellidoPaterno', 'apellidoMaterno', 'fechaNacimiento', 'fechaInicioOperaciones', 'situacionContribuyente', 'fechaUltimoCambio']
+            },
+            {
+                titulo: 'Datos de Ubicación (domicilio fiscal, vigente)',
+                campos: ['entidadFederativa', 'municipioDelegacion', 'colonia', 'tipoVialidad', 'nombreVialidad', 'numeroExterior', 'cp', 'correoElectronico', 'al']
+            },
+            {
+                titulo: 'Características fiscales (vigente)',
+                campos: ['regimen', 'fechaAlta']
+            }
         ];
 
-        // Crear el HTML dinámicamente para cada campo
-        campos.forEach(campo => {
-            // Obtenemos el valor de la URL, si no existe ponemos 'No especificado'
-            const valor = parametros.get(campo.id) || 'No especificado';
-            
-            const divRow = document.createElement('div');
-            divRow.className = 'data-row';
-            
-            const divLabel = document.createElement('div');
-            divLabel.className = 'data-label';
-            divLabel.textContent = campo.label + ':';
-            
-            const divValue = document.createElement('div');
-            divValue.className = 'data-value';
-            divValue.textContent = valor;
-            
-            divRow.appendChild(divLabel);
-            divRow.appendChild(divValue);
-            contenedor.appendChild(divRow);
+        const contenedor = document.getElementById('datosContenedor');
+
+        // Generamos el HTML respetando el diseño de las tarjetas
+        grupos.forEach(grupo => {
+            // Crear la tarjeta (card)
+            const divCard = document.createElement('div');
+            divCard.className = 'card';
+
+            // Crear el encabezado de la tarjeta
+            const divHeader = document.createElement('div');
+            divHeader.className = 'card-header';
+            divHeader.textContent = grupo.titulo;
+            divCard.appendChild(divHeader);
+
+            // Crear el cuerpo de la tarjeta
+            const divBody = document.createElement('div');
+            divBody.className = 'card-body';
+
+            // Agregar cada campo dentro del cuerpo de la tarjeta
+            grupo.campos.forEach(idCampo => {
+                const valor = parametros.get(idCampo) || ''; // Si está vacío, no pone 'No especificado', solo lo deja en blanco como en formularios reales
+                
+                const divRow = document.createElement('div');
+                divRow.className = 'data-row';
+                
+                const divLabel = document.createElement('div');
+                divLabel.className = 'data-label';
+                divLabel.textContent = nombresCampos[idCampo];
+                
+                const divValue = document.createElement('div');
+                divValue.className = 'data-value';
+                divValue.textContent = valor;
+                
+                divRow.appendChild(divLabel);
+                divRow.appendChild(divValue);
+                divBody.appendChild(divRow);
+            });
+
+            divCard.appendChild(divBody);
+            contenedor.appendChild(divCard);
         });
     }
 </script>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado de Validación</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 600px;
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .data-label {
+            font-weight: bold;
+            color: #555;
+            width: 45%;
+        }
+        .data-value {
+            color: #222;
+            width: 55%;
+            text-align: right;
+            word-break: break-word;
+        }
+        .success-banner {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="success-banner">
+        ✅ Datos validados correctamente
+    </div>
+    <h2>Información del Contribuyente</h2>
+    
+    <div id="datosContenedor">
+        </div>
+</div>
+
+<script>
+    // Función para obtener los parámetros de la URL
+    window.onload = function() {
+        const parametros = new URLSearchParams(window.location.search);
+        const contenedor = document.getElementById('datosContenedor');
+
+        // Lista de los campos que queremos mostrar (deben coincidir con los del generador)
+        const campos = [
+            { id: 'curp', label: 'CURP' },
+            { id: 'nombre', label: 'Nombre' },
+            { id: 'apellidoPaterno', label: 'Apellido Paterno' },
+            { id: 'apellidoMaterno', label: 'Apellido Materno' },
+            { id: 'fechaNacimiento', label: 'Fecha de Nacimiento' },
+            { id: 'fechaInicioOperaciones', label: 'Inicio de Operaciones' },
+            { id: 'situacionContribuyente', label: 'Situación del Contribuyente' },
+            { id: 'fechaUltimoCambio', label: 'Último Cambio de Situación' },
+            { id: 'entidadFederativa', label: 'Entidad Federativa' },
+            { id: 'municipioDelegacion', label: 'Municipio / Delegación' },
+            { id: 'colonia', label: 'Colonia' },
+            { id: 'tipoVialidad', label: 'Tipo de Vialidad' },
+            { id: 'nombreVialidad', label: 'Nombre de Vialidad' },
+            { id: 'numeroExterior', label: 'Número Exterior' },
+            { id: 'cp', label: 'C.P.' },
+            { id: 'correoElectronico', label: 'Correo Electrónico' },
+            { id: 'al', label: 'AL' },
+            { id: 'regimen', label: 'Régimen' },
+            { id: 'fechaAlta', label: 'Fecha de Alta' }
+        ];
+
+        // Crear el HTML dinámicamente para cada campo
+        campos.forEach(campo => {
+            // Obtenemos el valor de la URL, si no existe ponemos 'No especificado'
+            const valor = parametros.get(campo.id) || 'No especificado';
+            
+            const divRow = document.createElement('div');
+            divRow.className = 'data-row';
+            
+            const divLabel = document.createElement('div');
+            divLabel.className = 'data-label';
+            divLabel.textContent = campo.label + ':';
+            
+            const divValue = document.createElement('div');
+            divValue.className = 'data-value';
+            divValue.textContent = valor;
+            
+            divRow.appendChild(divLabel);
+            divRow.appendChild(divValue);
+            contenedor.appendChild(divRow);
+        });
+    }
+</script>
+
+</body>
+</html>

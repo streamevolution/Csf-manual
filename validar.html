@@ -99,7 +99,6 @@
             padding: 0px 12px 45px 28px; 
         }
         
-        /* Regresamos el data-row a la normalidad para no afectar a la CURP ni otros campos */
         .data-row {
             display: flex;
             width: 100%;
@@ -146,7 +145,6 @@
         const parametros = new URLSearchParams(window.location.search);
         let curpValueRaw = parametros.get('curp') || 'NO ESPECIFICADO';
         
-        // Generar RFC para el encabezado
         let rfcGenerado = curpValueRaw !== 'NO ESPECIFICADO' ? curpValueRaw.substring(0, 13).toUpperCase() : curpValueRaw;
         document.getElementById('rfcValue').textContent = rfcGenerado;
 
@@ -205,7 +203,6 @@
             grupo.campos.forEach(idCampo => {
                 let valor = parametros.get(idCampo) || ''; 
                 
-                // Formatear valor según el campo
                 if (idCampo === 'correoElectronico') {
                     valor = valor.toLowerCase();
                 } else if (idCampo === 'curp' && valor.length >= 18) {
@@ -216,19 +213,20 @@
                 
                 const divRow = document.createElement('div');
                 divRow.className = 'data-row';
-                
-                // --- AJUSTE: Aplicamos la alineación hacia abajo ÚNICAMENTE a estos 3 campos ---
-                if (['fechaInicioOperaciones', 'situacionContribuyente', 'fechaUltimoCambio'].includes(idCampo)) {
-                    divRow.style.alignItems = 'flex-end';
-                }
-                // ---------------------------------------------------------------------------------
-
                 const divLabel = document.createElement('div');
                 divLabel.className = 'data-label';
                 divLabel.textContent = nombresCampos[idCampo];
                 const divValue = document.createElement('div');
                 divValue.className = 'data-value';
                 divValue.textContent = valor;
+                
+                // --- AJUSTE FINO: Sube el texto casi nada exclusivamente en estos 3 valores ---
+                if (['fechaInicioOperaciones', 'situacionContribuyente', 'fechaUltimoCambio'].includes(idCampo)) {
+                    divRow.style.alignItems = 'flex-end';
+                    divValue.style.position = 'relative';
+                    divValue.style.top = '-5px'; /* Ajuste milimétrico hacia arriba */
+                }
+                // --------------------------------------------------------------------------------
                 
                 divRow.appendChild(divLabel);
                 divRow.appendChild(divValue);

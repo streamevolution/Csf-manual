@@ -32,7 +32,6 @@
             box-sizing: border-box; 
         }
         
-        /* Estilos del primer rectángulo del RFC */
         .rfc-rectangle {
             background-image: url('https://i.postimg.cc/VkmzG632/1772435835299.png');
             background-size: 100% 100%; 
@@ -43,13 +42,14 @@
             margin-left: -15px; 
             padding: 45px 30px 25px 38px; 
             margin-bottom: -10px; 
-            font-size: 14.5px; 
+            
+            font-size: 15px; 
+            
             color: #333;
             box-sizing: border-box;
             text-align: left;
         }
 
-        /* Estilos de las tarjetas (Cards) aplicadas como imagen de fondo */
         .card {
             background-image: url('https://i.postimg.cc/d1ryR3bg/1772436938445.png');
             background-size: 100% 100%; 
@@ -65,13 +65,45 @@
             margin-left: -15px; 
             margin-bottom: -4px; 
         }
+
+        /* --- Ajuste para subir el encabezado de la SEGUNDA tarjeta --- */
+        #datosContenedor .card:nth-child(2) .card-header {
+            padding-top: 10px; 
+            padding-bottom: 25px; 
+        }
+        
+        /* --- AJUSTE NUEVO: Mover a la derecha las etiquetas de la SEGUNDA tarjeta --- */
+        #datosContenedor .card:nth-child(2) .data-label {
+            position: relative;
+            left: 12px; /* Este es el valor que empuja el texto a la derecha */
+        }
+        /* ---------------------------------------------------------------------------- */
+
+        /* --- Tarjeta en el tamaño que te gustó (250px) --- */
+        #datosContenedor .card:last-child {
+            min-height: 250px; 
+        }
+
+        #datosContenedor .card:last-child .card-header {
+            padding-top: 6px; 
+            padding-bottom: 36px; 
+            padding-left: 33px; 
+            padding-right: 20px;
+        }
+
+        #datosContenedor .card:last-child .card-body {
+            padding-top: 5px; 
+            padding-bottom: 10px; 
+        }
+        /* ------------------------------------------------------------- */
         
         .card-header {
             background: transparent; 
             padding: 15px 20px 20px 33px; 
-            font-size: 15.5px; 
+            
+            font-size: 16px; 
+            
             color: #4a3c31;
-            /* MODIFICACIÓN: Para coincidir con el SAT, peso normal */
             font-weight: normal;
             border-bottom: none; 
         }
@@ -81,22 +113,21 @@
             padding: 0px 12px 45px 28px; 
         }
         
-        /* Estilos de las filas de datos */
         .data-row {
             display: flex;
             justify-content: center; 
             padding: 2px 0; 
         }
         .data-label {
-            /* --- AJUSTE: Letra menos negrita (peso normal) --- */
-            font-weight: 400; /* Peso normal para coincidir con la imagen de referencia */
-            /* -------------------------------------------------- */
+            font-weight: 400; 
             color: #333;
             width: 44%; 
             text-align: right;
             padding-right: 5px; 
             box-sizing: border-box;
-            font-size: 13.5px; 
+            
+            font-size: 15px; 
+            
             line-height: 1.3; 
         }
         .data-value {
@@ -106,12 +137,10 @@
             padding-left: 0;
             word-break: break-word;
             text-transform: uppercase; 
-            font-size: 13.5px; 
+            
+            font-size: 14px; 
+            
             line-height: 1.3; 
-        }
-
-        #datosContenedor .card:last-child {
-            min-height: 320px; 
         }
     </style>
 </head>
@@ -136,12 +165,10 @@
     window.onload = function() {
         const parametros = new URLSearchParams(window.location.search);
         
-        // Extraemos la CURP para simular el RFC en el texto superior (primeros 13 caracteres)
         let curpValue = parametros.get('curp') || 'NO ESPECIFICADO';
         let rfcGenerado = curpValue !== 'NO ESPECIFICADO' ? curpValue.substring(0, 13) : curpValue;
         document.getElementById('rfcValue').textContent = rfcGenerado;
 
-        // Definimos los nombres a mostrar para cada ID
         const nombresCampos = {
             curp: 'CURP:',
             nombre: 'Nombre:',
@@ -164,7 +191,6 @@
             fechaAlta: 'Fecha de Alta:'
         };
 
-        // Estructuramos en los 3 grupos que aparecen en tus imágenes
         const grupos = [
             {
                 titulo: 'Datos de Identificación',
@@ -182,7 +208,6 @@
 
         const contenedor = document.getElementById('datosContenedor');
 
-        // Generamos el HTML respetando el diseño de las tarjetas
         grupos.forEach(grupo => {
             const divCard = document.createElement('div');
             divCard.className = 'card';

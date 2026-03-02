@@ -220,11 +220,11 @@
                 divValue.className = 'data-value';
                 divValue.textContent = valor;
                 
-                // --- AJUSTE FINO: Sube el texto casi nada exclusivamente en estos 3 valores ---
+                // --- AJUSTE FINO: Sube el texto un poco más exclusivamente en estos 3 valores ---
                 if (['fechaInicioOperaciones', 'situacionContribuyente', 'fechaUltimoCambio'].includes(idCampo)) {
                     divRow.style.alignItems = 'flex-end';
                     divValue.style.position = 'relative';
-                    divValue.style.top = '-5px'; /* Ajuste milimétrico hacia arriba */
+                    divValue.style.top = '-9px'; /* Ajustado para subirlo un poquito más */
                 }
                 // --------------------------------------------------------------------------------
                 

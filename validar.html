@@ -206,6 +206,11 @@
                 
                 if (idCampo === 'correoElectronico') {
                     valor = valor.toLowerCase();
+                    // --- AJUSTE: Dividir correo antes de "com" ---
+                    if (valor.endsWith('.com')) {
+                        valor = valor.replace(/\.com$/, '.\ncom');
+                    }
+                    // ---------------------------------------------
                 } else if (idCampo === 'curp' && valor.length >= 18) {
                     valor = valor.substring(0, 16).toUpperCase() + '\n' + valor.substring(16).toUpperCase();
                 } else {
@@ -218,24 +223,20 @@
                 divLabel.className = 'data-label';
                 divLabel.textContent = nombresCampos[idCampo];
                 
-                // --- AJUSTE FINO: Bajar un poco los textos de "Colonia:" y "Correo electrónico:" ---
                 if (['colonia', 'correoElectronico'].includes(idCampo)) {
                     divLabel.style.position = 'relative';
-                    divLabel.style.top = '5px'; /* Ajuste para bajarlo un poco */
+                    divLabel.style.top = '5px'; 
                 }
-                // ----------------------------------------------------------------------------------
 
                 const divValue = document.createElement('div');
                 divValue.className = 'data-value';
                 divValue.textContent = valor;
                 
-                // --- AJUSTE FINO: Sube el texto un poco más exclusivamente en estos 3 valores ---
                 if (['fechaInicioOperaciones', 'situacionContribuyente', 'fechaUltimoCambio'].includes(idCampo)) {
                     divRow.style.alignItems = 'flex-end';
                     divValue.style.position = 'relative';
                     divValue.style.top = '-9px'; 
                 }
-                // --------------------------------------------------------------------------------
                 
                 divRow.appendChild(divLabel);
                 divRow.appendChild(divValue);

@@ -230,11 +230,15 @@
                 divValue.className = 'data-value';
                 divValue.textContent = valor;
                 
-                // --- AJUSTE: Hacer la fuente un poco más chica solo en "Régimen" ---
+                // --- AJUSTE NUEVO: Restringir el ancho del valor en "Colonia" ---
+                if (idCampo === 'colonia') {
+                    divValue.style.paddingRight = '45px'; /* Esto empuja el texto para que ocupe menos ancho */
+                }
+                // ----------------------------------------------------------------
+
                 if (idCampo === 'regimen') {
                     divValue.style.fontSize = '13.5px';
                 }
-                // -------------------------------------------------------------------
 
                 if (['fechaInicioOperaciones', 'situacionContribuyente', 'fechaUltimoCambio'].includes(idCampo)) {
                     divRow.style.alignItems = 'flex-end';

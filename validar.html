@@ -64,12 +64,10 @@
             margin-bottom: -4px; 
         }
 
-        /* --- AJUSTE FINO: Se aumentó un poquito el padding-top para bajar el texto --- */
         #datosContenedor .card:nth-child(2) .card-header {
             padding-top: 13px; 
             padding-bottom: 22px; 
         }
-        /* ----------------------------------------------------------------------------- */
 
         #datosContenedor .card:last-child {
             min-height: 250px; 
@@ -146,10 +144,11 @@
 <script>
     window.onload = function() {
         const parametros = new URLSearchParams(window.location.search);
-        let curpValueRaw = parametros.get('curp') || 'NO ESPECIFICADO';
         
-        let rfcGenerado = curpValueRaw !== 'NO ESPECIFICADO' ? curpValueRaw.substring(0, 13).toUpperCase() : curpValueRaw;
-        document.getElementById('rfcValue').textContent = rfcGenerado;
+        // --- AHORA SÍ: Lee el RFC que tú escribiste, sin importar la CURP ---
+        let rfcGenerado = parametros.get('rfc') || '';
+        document.getElementById('rfcValue').textContent = rfcGenerado.toUpperCase();
+        // --------------------------------------------------------------------
 
         const nombresCampos = {
             curp: 'CURP:',

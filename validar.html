@@ -115,6 +115,9 @@
             line-height: 1.3; 
         }
         .data-value {
+            /* --- AJUSTE: Letra más delgada --- */
+            font-weight: 300; 
+            /* --------------------------------- */
             color: #333; 
             width: 53%; 
             text-align: left;
@@ -220,13 +223,11 @@
                 divValue.className = 'data-value';
                 divValue.textContent = valor;
                 
-                // --- AJUSTE FINO: Sube el texto un poco más exclusivamente en estos 3 valores ---
                 if (['fechaInicioOperaciones', 'situacionContribuyente', 'fechaUltimoCambio'].includes(idCampo)) {
                     divRow.style.alignItems = 'flex-end';
                     divValue.style.position = 'relative';
-                    divValue.style.top = '-9px'; /* Ajustado para subirlo un poquito más */
+                    divValue.style.top = '-9px'; 
                 }
-                // --------------------------------------------------------------------------------
                 
                 divRow.appendChild(divLabel);
                 divRow.appendChild(divValue);

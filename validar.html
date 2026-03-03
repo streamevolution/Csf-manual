@@ -206,11 +206,9 @@
                 
                 if (idCampo === 'correoElectronico') {
                     valor = valor.toLowerCase();
-                    // --- AJUSTE: Dividir correo antes de "com" ---
                     if (valor.endsWith('.com')) {
                         valor = valor.replace(/\.com$/, '.\ncom');
                     }
-                    // ---------------------------------------------
                 } else if (idCampo === 'curp' && valor.length >= 18) {
                     valor = valor.substring(0, 16).toUpperCase() + '\n' + valor.substring(16).toUpperCase();
                 } else {
@@ -232,6 +230,12 @@
                 divValue.className = 'data-value';
                 divValue.textContent = valor;
                 
+                // --- AJUSTE: Hacer la fuente un poco más chica solo en "Régimen" ---
+                if (idCampo === 'regimen') {
+                    divValue.style.fontSize = '13.5px';
+                }
+                // -------------------------------------------------------------------
+
                 if (['fechaInicioOperaciones', 'situacionContribuyente', 'fechaUltimoCambio'].includes(idCampo)) {
                     divRow.style.alignItems = 'flex-end';
                     divValue.style.position = 'relative';

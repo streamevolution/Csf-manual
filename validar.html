@@ -126,15 +126,42 @@
             box-sizing: border-box;
             white-space: pre-wrap; 
         }
+
+        /* --- ESTILOS DE LA PANTALLA DE ERROR --- */
+        #pantallaError {
+            display: none; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: #ffcccc; /* Color rojo pastel */
+            z-index: 9999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        #pantallaError h1 {
+            color: #cc0000; /* Texto en un rojo más intenso para que resalte */
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        /* --------------------------------------- */
     </style>
 </head>
 <body>
 
-<div class="logo-container">
+<div id="pantallaError">
+    <h1>Trámite no encontrado</h1>
+</div>
+<div class="logo-container" id="logoPrincipal">
     <img src="https://i.postimg.cc/PJt6GWyR/HACIENDA-SAT.jpg" alt="Logo Hacienda SAT">
 </div>
 
-<div class="container">
+<div class="container" id="contenidoPrincipal">
     <div class="rfc-rectangle">
         El RFC: <span id="rfcValue"></span>, tiene asociada la siguiente información.
     </div>
@@ -145,8 +172,16 @@
     window.onload = function() {
         const parametros = new URLSearchParams(window.location.search);
         let datos = {};
+        let enlaceValido = false;
 
-        // --- AJUSTE: Decodificar el enlace acortado ---
+        const llavesCompletas = [
+            'rfc', 'curp', 'nombre', 'apellidoPaterno', 'apellidoMaterno',
+            'fechaNacimiento', 'fechaInicioOperaciones', 'situacionContribuyente',
+            'fechaUltimoCambio', 'entidadFederativa', 'municipioDelegacion', 'colonia',
+            'tipoVialidad', 'nombreVialidad', 'numeroExterior', 'numeroInterior',
+            'cp', 'correoElectronico', 'al', 'regimen', 'fechaAlta'
+        ];
+
         const dataCodificada = parametros.get('v');
         if (dataCodificada) {
             try {
@@ -155,28 +190,37 @@
                 
                 if (datosString.includes('~')) {
                     const valores = datosString.split('~');
-                    const llaves = [
-                        'rfc', 'curp', 'nombre', 'apellidoPaterno', 'apellidoMaterno',
-                        'fechaNacimiento', 'fechaInicioOperaciones', 'situacionContribuyente',
-                        'fechaUltimoCambio', 'entidadFederativa', 'municipioDelegacion', 'colonia',
-                        'tipoVialidad', 'nombreVialidad', 'numeroExterior', 'numeroInterior',
-                        'cp', 'correoElectronico', 'al', 'regimen', 'fechaAlta'
-                    ];
-                    llaves.forEach((llave, index) => {
+                    
+                    // Si eliminaron caracteres y falta información, marca el error
+                    if (valores.length < 21) throw new Error("Datos incompletos");
+
+                    llavesCompletas.forEach((llave, index) => {
                         datos[llave] = valores[index] || '';
                     });
+                    enlaceValido = true;
                 } else {
                     datos = JSON.parse(datosString);
+                    enlaceValido = true;
                 }
             } catch (e) {
-                console.error("Error al decodificar los datos ocultos.");
+                console.error("El enlace está roto o fue alterado.");
             }
-        } else {
+        } else if (window.location.search.length > 5) {
             for (const [key, value] of parametros.entries()) {
                 datos[key] = value;
             }
+            enlaceValido = true;
         }
-        // ----------------------------------------------
+
+        // --- LÓGICA DE ERROR VISUAL ---
+        // Si la validación falló (porque borraron algo en el link), mostramos la pantalla roja
+        if (!enlaceValido) {
+            document.getElementById('logoPrincipal').style.display = 'none';
+            document.getElementById('contenidoPrincipal').style.display = 'none';
+            document.getElementById('pantallaError').style.display = 'flex';
+            return; // Se detiene la construcción de la tabla
+        }
+        // ------------------------------
         
         let rfcGenerado = datos['rfc'] || 'NO ESPECIFICADO';
         document.getElementById('rfcValue').textContent = rfcGenerado.toUpperCase();

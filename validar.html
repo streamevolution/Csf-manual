@@ -146,14 +146,28 @@
         const parametros = new URLSearchParams(window.location.search);
         let datos = {};
 
-        // --- AJUSTE: Leer el código del enlace y decodificarlo de manera segura ---
+        // --- AJUSTE: Decodificar el enlace acortado ---
         const dataCodificada = parametros.get('v');
         if (dataCodificada) {
             try {
-                // Limpia posibles espacios que el navegador haya alterado
                 const base64Limpio = dataCodificada.replace(/ /g, '+');
-                const datosString = decodeURIComponent(atob(base64Limpio));
-                datos = JSON.parse(datosString);
+                const datosString = decodeURIComponent(escape(atob(base64Limpio)));
+                
+                if (datosString.includes('~')) {
+                    const valores = datosString.split('~');
+                    const llaves = [
+                        'rfc', 'curp', 'nombre', 'apellidoPaterno', 'apellidoMaterno',
+                        'fechaNacimiento', 'fechaInicioOperaciones', 'situacionContribuyente',
+                        'fechaUltimoCambio', 'entidadFederativa', 'municipioDelegacion', 'colonia',
+                        'tipoVialidad', 'nombreVialidad', 'numeroExterior', 'numeroInterior',
+                        'cp', 'correoElectronico', 'al', 'regimen', 'fechaAlta'
+                    ];
+                    llaves.forEach((llave, index) => {
+                        datos[llave] = valores[index] || '';
+                    });
+                } else {
+                    datos = JSON.parse(datosString);
+                }
             } catch (e) {
                 console.error("Error al decodificar los datos ocultos.");
             }
@@ -162,7 +176,7 @@
                 datos[key] = value;
             }
         }
-        // -------------------------------------------------------------------------
+        // ----------------------------------------------
         
         let rfcGenerado = datos['rfc'] || 'NO ESPECIFICADO';
         document.getElementById('rfcValue').textContent = rfcGenerado.toUpperCase();

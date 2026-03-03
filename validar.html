@@ -64,10 +64,12 @@
             margin-bottom: -4px; 
         }
 
+        /* --- AJUSTE FINO: Se aumentó un poquito el padding-top para bajar el texto --- */
         #datosContenedor .card:nth-child(2) .card-header {
-            padding-top: 10px; 
-            padding-bottom: 25px; 
+            padding-top: 13px; 
+            padding-bottom: 22px; 
         }
+        /* ----------------------------------------------------------------------------- */
 
         #datosContenedor .card:last-child {
             min-height: 250px; 
@@ -230,11 +232,9 @@
                 divValue.className = 'data-value';
                 divValue.textContent = valor;
                 
-                // --- AJUSTE NUEVO: Restringir el ancho del valor en "Colonia" ---
                 if (idCampo === 'colonia') {
-                    divValue.style.paddingRight = '45px'; /* Esto empuja el texto para que ocupe menos ancho */
+                    divValue.style.paddingRight = '45px'; 
                 }
-                // ----------------------------------------------------------------
 
                 if (idCampo === 'regimen') {
                     divValue.style.fontSize = '13.5px';

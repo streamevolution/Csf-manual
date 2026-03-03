@@ -144,11 +144,28 @@
 <script>
     window.onload = function() {
         const parametros = new URLSearchParams(window.location.search);
+        let datos = {};
+
+        // --- AJUSTE: Leer el código del enlace y decodificarlo de manera segura ---
+        const dataCodificada = parametros.get('v');
+        if (dataCodificada) {
+            try {
+                // Limpia posibles espacios que el navegador haya alterado
+                const base64Limpio = dataCodificada.replace(/ /g, '+');
+                const datosString = decodeURIComponent(atob(base64Limpio));
+                datos = JSON.parse(datosString);
+            } catch (e) {
+                console.error("Error al decodificar los datos ocultos.");
+            }
+        } else {
+            for (const [key, value] of parametros.entries()) {
+                datos[key] = value;
+            }
+        }
+        // -------------------------------------------------------------------------
         
-        // --- AHORA SÍ: Lee el RFC que tú escribiste, sin importar la CURP ---
-        let rfcGenerado = parametros.get('rfc') || '';
+        let rfcGenerado = datos['rfc'] || 'NO ESPECIFICADO';
         document.getElementById('rfcValue').textContent = rfcGenerado.toUpperCase();
-        // --------------------------------------------------------------------
 
         const nombresCampos = {
             curp: 'CURP:',
@@ -203,7 +220,7 @@
             divBody.className = 'card-body';
 
             grupo.campos.forEach(idCampo => {
-                let valor = parametros.get(idCampo) || ''; 
+                let valor = datos[idCampo] || ''; 
                 
                 if (idCampo === 'correoElectronico') {
                     valor = valor.toLowerCase();

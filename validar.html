@@ -181,10 +181,23 @@
         if (dataCodificada) {
             try {
                 const base64Limpio = dataCodificada.replace(/ /g, '+');
+                
+                // SEGURIDAD ULTRA ESTRICTA 1: El código encriptado siempre debe ser múltiplo de 4.
+                // Si le borran tan solo 1 o 2 caracteres, esto lo detecta y lo destruye de inmediato.
+                if (base64Limpio.length % 4 !== 0) {
+                    throw new Error("Código incompleto o alterado");
+                }
+
                 const datosString = decodeURIComponent(escape(atob(base64Limpio)));
                 
                 if (datosString.includes('~')) {
                     const valores = datosString.split('~');
+                    
+                    // SEGURIDAD ULTRA ESTRICTA 2: Verifica que estén todos los datos exactos.
+                    if (valores.length !== llavesCompletas.length) {
+                        throw new Error("Faltan separadores de datos");
+                    }
+
                     llavesCompletas.forEach((llave, index) => {
                         datos[llave] = valores[index] || '';
                     });

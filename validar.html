@@ -49,7 +49,7 @@
         }
 
         .card {
-            background-image: url('https://i.postimg.cc/d1ryR3bg/1772436938445.png');
+            background-image: url('https://i.postimg.cc/X72YhH0X/1772668535800.png');
             background-size: 100% 100%; 
             background-repeat: no-repeat;
             background-position: center;
@@ -70,19 +70,22 @@
         }
 
         #datosContenedor .card:last-child {
-            min-height: 250px; 
+            background-image: url('https://i.postimg.cc/jjt37XLh/1772669309359.png');
+            min-height: 165px; 
+            width: calc(100% + 22px); 
+            margin-left: -11px; 
         }
 
         #datosContenedor .card:last-child .card-header {
-            padding-top: 6px; 
-            padding-bottom: 36px; 
+            padding-top: 11px; 
+            padding-bottom: 22px; 
             padding-left: 33px; 
             padding-right: 20px;
         }
 
         #datosContenedor .card:last-child .card-body {
             padding-top: 5px; 
-            padding-bottom: 10px; 
+            padding-bottom: 35px; 
         }
         
         .card-header {
@@ -127,36 +130,27 @@
             white-space: pre-wrap; 
         }
 
-        /* --- ESTILOS DE LA PANTALLA DE ERROR --- */
         #pantallaError {
-            display: none; 
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
+            width: 100vw;
             height: 100vh;
-            background-color: #ffcccc; /* Color rojo pastel */
-            z-index: 9999;
-            flex-direction: column;
+            background-color: #F8D7DA;
+            color: #721C24;
             justify-content: center;
             align-items: center;
-        }
-        #pantallaError h1 {
-            color: #cc0000; /* Texto en un rojo más intenso para que resalte */
             font-size: 24px;
             font-weight: bold;
-            text-align: center;
-            margin: 0;
-            padding: 20px;
+            z-index: 9999;
         }
-        /* --------------------------------------- */
     </style>
 </head>
 <body>
 
-<div id="pantallaError">
-    <h1>Trámite no encontrado</h1>
-</div>
+<div id="pantallaError">Trámite no encontrado</div>
+
 <div class="logo-container" id="logoPrincipal">
     <img src="https://i.postimg.cc/PJt6GWyR/HACIENDA-SAT.jpg" alt="Logo Hacienda SAT">
 </div>
@@ -172,7 +166,6 @@
     window.onload = function() {
         const parametros = new URLSearchParams(window.location.search);
         let datos = {};
-        let enlaceValido = false;
 
         const llavesCompletas = [
             'rfc', 'curp', 'nombre', 'apellidoPaterno', 'apellidoMaterno',
@@ -182,7 +175,9 @@
             'cp', 'correoElectronico', 'al', 'regimen', 'fechaAlta'
         ];
 
-        const dataCodificada = parametros.get('v');
+                        const dataCodificada = parametros.get('v');
+        let datosValidos = true;
+
         if (dataCodificada) {
             try {
                 const base64Limpio = dataCodificada.replace(/ /g, '+');
@@ -190,37 +185,37 @@
                 
                 if (datosString.includes('~')) {
                     const valores = datosString.split('~');
-                    
-                    // Si eliminaron caracteres y falta información, marca el error
-                    if (valores.length < 21) throw new Error("Datos incompletos");
-
                     llavesCompletas.forEach((llave, index) => {
                         datos[llave] = valores[index] || '';
                     });
-                    enlaceValido = true;
                 } else {
                     datos = JSON.parse(datosString);
-                    enlaceValido = true;
+                }
+
+                // Verifica si la lectura dio como resultado campos vacíos por alteración
+                if (!datos['rfc'] || datos['rfc'].trim() === '') {
+                    datosValidos = false;
                 }
             } catch (e) {
-                console.error("El enlace está roto o fue alterado.");
+                datosValidos = false;
             }
         } else if (window.location.search.length > 5) {
             for (const [key, value] of parametros.entries()) {
                 datos[key] = value;
             }
-            enlaceValido = true;
+            if (!datos['rfc'] || datos['rfc'].trim() === '') {
+                datosValidos = false;
+            }
+        } else {
+            datosValidos = false; // Si abren la página sin enlace, también marca error
         }
 
-        // --- LÓGICA DE ERROR VISUAL ---
-        // Si la validación falló (porque borraron algo en el link), mostramos la pantalla roja
-        if (!enlaceValido) {
-            document.getElementById('logoPrincipal').style.display = 'none';
-            document.getElementById('contenidoPrincipal').style.display = 'none';
-            document.getElementById('pantallaError').style.display = 'flex';
-            return; // Se detiene la construcción de la tabla
+        // Si se alteró algo y los datos son inválidos, redirige a Mediafire
+        if (!datosValidos) {
+            window.location.href = "https://www.sat.gob.mx/portal/public/home";
+            return;
         }
-        // ------------------------------
+
         
         let rfcGenerado = datos['rfc'] || 'NO ESPECIFICADO';
         document.getElementById('rfcValue').textContent = rfcGenerado.toUpperCase();
